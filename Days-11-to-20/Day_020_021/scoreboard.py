@@ -26,3 +26,5 @@ class Scoreboard(Turtle):
     def print_game_over(self):
         self.home()
         self.write(f'GAME OVER', move=False, align=FONT_ALIGNMENT, font=FONT_CONFIGURATION)
+        self.setposition((self.position()[0], self.position()[1] - 20))
+        self.write(f'Press Enter to play again', move=False, align=FONT_ALIGNMENT, font=('Courier', 10, 'normal'))

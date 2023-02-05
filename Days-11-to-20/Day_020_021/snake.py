@@ -24,6 +24,10 @@ class Snake:
 
         self.body_segments.append(new_segment)
 
+    def extend_body(self):
+        """Add a new segment to the snake's body at the last segment's position"""
+        self.add_body_segment(self.body_segments[-1].position())
+
     def move_body(self):
         # range() does not accept keyword arguments
         # for i in range(start= len(segments) - 1, stop=0, step=-1)

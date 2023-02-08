@@ -31,13 +31,6 @@ def unpause():
 def pause():
     global game_is_paused
     game_is_paused = True
-    pausing()
-
-
-def pausing():
-    global game_is_paused
-    if game_is_paused:
-        turtle.ontimer(pausing, 250)
 
 
 snake = Snake()

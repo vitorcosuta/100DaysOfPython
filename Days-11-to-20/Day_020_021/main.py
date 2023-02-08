@@ -42,6 +42,7 @@ screen.onkeypress(snake.up, 'Up')
 screen.onkeypress(snake.right, 'Right')
 screen.onkeypress(snake.left, 'Left')
 screen.onkeypress(snake.down, 'Down')
+screen.onkeypress(unpause, 'Return')
 
 game_is_on = True
 game_is_paused = False
@@ -64,14 +65,12 @@ while game_is_on:
                 or snake.head_segment.ycor() > 300 or snake.head_segment.ycor() < -280:
             scoreboard.print_game_over()
             pause()
-            screen.onkeypress(unpause, 'Return')
 
         # Detect collision with other segments
         for segment in snake.body_segments[1:]:
             if snake.head_segment.distance(segment) < 5:
                 scoreboard.print_game_over()
                 pause()
-                screen.onkeypress(unpause, 'Return')
     else:
         screen.update()
 

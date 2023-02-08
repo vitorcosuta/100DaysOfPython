@@ -5,12 +5,26 @@ FONT_CONFIGURATION = ('Courier', 18, 'bold')
 FONT_ALIGNMENT = 'center'
 
 
+def read_high_score():
+
+    with open('data.txt', mode='r') as data:
+        high_score = int(data.read())
+
+    return high_score
+
+
+def update_high_score(score):
+
+    with open('data.txt', mode='w') as data:
+        data.write(f'{score}')
+
+
 class Scoreboard(Turtle):
 
     def __init__(self):
         super().__init__()
         self.score = 0
-        self.high_score = 0
+        self.high_score = read_high_score()
         self.hideturtle()
         self.color('white')
         self.penup()
@@ -26,6 +40,7 @@ class Scoreboard(Turtle):
 
         if self.score > self.high_score:
             self.high_score = self.score
+            update_high_score(self.high_score)
 
         self.score = 0
         self.setposition(STARTING_POSITION)

@@ -41,6 +41,15 @@ class Snake:
         for position in STARTING_POSITIONS:
             self.add_body_segment(position)
 
+    def reset_body(self):
+
+        for segment in self.body_segments:
+            segment.hideturtle()
+
+        self.body_segments.clear()
+        self.start_body()
+        self.head_segment = self.body_segments[0]
+
     def up(self):
         if self.head_segment.heading() != DIRECTIONS['south']:
             self.head_segment.setheading(DIRECTIONS['north'])

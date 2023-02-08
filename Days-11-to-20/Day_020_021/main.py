@@ -1,3 +1,4 @@
+import turtle
 from turtle import Screen
 from snake import Snake
 from food import Food
@@ -15,32 +16,53 @@ screen.tracer(0)
 
 
 def restart_game():
-    screen.reset()
-    run_game()
+    scoreboard.reset_scoreboard()
+    snake.reset_body()
 
 
-def run_game():
+def unpause():
+    global game_is_paused
 
-    snake = Snake()
-    food = Food()
-    scoreboard = Scoreboard()
+    if game_is_paused:
+        game_is_paused = False
+        restart_game()
 
-    screen.listen()
-    screen.onkeypress(snake.up, 'Up')
-    screen.onkeypress(snake.right, 'Right')
-    screen.onkeypress(snake.left, 'Left')
-    screen.onkeypress(snake.down, 'Down')
 
-    game_is_on = True
+def pause():
+    global game_is_paused
+    game_is_paused = True
+    pausing()
 
-    while game_is_on:
+
+def pausing():
+    global game_is_paused
+    if game_is_paused:
+        turtle.ontimer(pausing, 250)
+
+
+snake = Snake()
+food = Food()
+scoreboard = Scoreboard()
+
+screen.listen()
+screen.onkeypress(snake.up, 'Up')
+screen.onkeypress(snake.right, 'Right')
+screen.onkeypress(snake.left, 'Left')
+screen.onkeypress(snake.down, 'Down')
+
+game_is_on = True
+game_is_paused = False
+
+while game_is_on:
+
+    if not game_is_paused:
         screen.update()
         time.sleep(0.1)
         snake.move_body()
 
         # Detect collision with food
-        if snake.head_segment.distance(food) < 14:
-            scoreboard.update_score()
+        if snake.head_segment.distance(food) < 15:
+            scoreboard.increase_score()
             snake.extend_body()
             food.refresh()
 
@@ -48,19 +70,17 @@ def run_game():
         if snake.head_segment.xcor() > 280 or snake.head_segment.xcor() < -280 \
                 or snake.head_segment.ycor() > 300 or snake.head_segment.ycor() < -280:
             scoreboard.print_game_over()
-            game_is_on = False
+            pause()
+            screen.onkeypress(unpause, 'Return')
 
         # Detect collision with other segments
         for segment in snake.body_segments[1:]:
             if snake.head_segment.distance(segment) < 5:
                 scoreboard.print_game_over()
-                game_is_on = False
+                pause()
+                screen.onkeypress(unpause, 'Return')
+    else:
+        screen.update()
 
-    # Rerun the game if Enter key is pressed
-    if not game_is_on:
-        screen.onkeypress(restart_game, 'Return')
-
-
-run_game()
 screen.exitonclick()
 

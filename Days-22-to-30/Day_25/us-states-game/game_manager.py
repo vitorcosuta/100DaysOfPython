@@ -53,11 +53,7 @@ class GameManager(Turtle):
 
     def generate_to_learn_file(self):
 
-        missed_states = []
-
-        for state in self.all_states:
-            if state not in self.correct_guesses:
-                missed_states.append(state)
+        missed_states = [state for state in self.all_states if state not in self.correct_guesses]
 
         file_data_dict = {
             'Missed States': missed_states

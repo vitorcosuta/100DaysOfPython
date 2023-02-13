@@ -2,9 +2,26 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 FONT = ('Arial', 10, 'normal')
 
+
+# ---------------------------- SEARCH PASSWORD ------------------------------- #
+def search_password():
+    website_name = website_entry.get()
+    try:
+        with open(file='password_list.json', mode='r') as password_file:
+            data = json.load(password_file)
+    except FileNotFoundError:
+        messagebox.showwarning(title='Error', message='No data file found.')
+    else:
+        if website_name in data:
+            saved_email = data[website_name]['email']
+            saved_password = data[website_name]['password']
+            messagebox.showinfo(title=f'{website_name}', message=f'Email: {saved_email}\nPassword: {saved_password}')
+        else:
+            messagebox.showwarning(title='Error', message="There's no info regarding the input website.")
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_random_password():
@@ -55,6 +72,13 @@ def save_new_password():
     website = website_entry.get()
     email = email_entry.get()
     password = password_entry.get()
+    new_data = {
+        website:
+        {
+            'email': email,
+            'password': password,
+        }
+    }
 
     valid_entries = is_valid_entry(website, email, password)
 
@@ -62,14 +86,26 @@ def save_new_password():
 
         is_ok_to_save = messagebox.askokcancel(
             title='Please confirm your data',
-            message=f"These are the details entered:\n\nEmail:{email}\nPassword:{password}\n\nIs this ok to save?"
+            message=f"These are the details entered:\n\nEmail: {email}\nPassword: {password}\n\nIs this ok to save?"
         )
 
         if is_ok_to_save:
-            with open(file='password_list.txt', mode='a') as password_file:
-                password_file.write(f"{website} | {email} | {password}\n")
+            try:
+                with open(file='password_list.json', mode='r') as password_file:
+                    # Reading old data
+                    data = json.load(password_file)
+            except FileNotFoundError:
+                with open(file='password_list.json', mode='w') as password_file:
+                    json.dump(new_data, password_file, indent=4)
+            else:
+                # Updating old data with new data
+                data.update(new_data)
 
-            clear_entry(website_entry, password_entry)
+                with open(file='password_list.json', mode='w') as password_file:
+                    # Saving updated data
+                    json.dump(data, password_file, indent=4)
+            finally:
+                clear_entry(website_entry, password_entry)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -98,7 +134,7 @@ password_text.grid(row=3, column=0)
 
 # Entries
 website_entry = Entry()
-website_entry.grid(row=1, column=1, columnspan=2, sticky='EW')
+website_entry.grid(row=1, column=1, sticky='EW')
 website_entry.focus()
 
 email_entry = Entry()
@@ -114,5 +150,8 @@ gen_password_button.grid(row=3, column=2, sticky='EW')
 
 add_button = Button(text='Add', width=50, command=save_new_password)
 add_button.grid(row=4, column=1, columnspan=2)
+
+search_button = Button(text='Search', command=search_password)
+search_button.grid(row=1, column=2, sticky='EW')
 
 window.mainloop()

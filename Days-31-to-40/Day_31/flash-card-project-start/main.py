@@ -53,6 +53,7 @@ def inform_end_of_deck():
     canvas.itemconfig(lang_title, text='You successfully finished this deck.', fill='black')
     canvas.itemconfig(word_display, text='Congrats!', fill='black')
 
+
 # Configuring the screen
 window = Tk()
 window.title('Flashcards')

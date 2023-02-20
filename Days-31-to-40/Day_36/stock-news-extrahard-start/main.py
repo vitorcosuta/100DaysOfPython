@@ -1,5 +1,4 @@
 import requests
-import itertools
 import os
 from twilio.rest import Client
 
@@ -21,13 +20,12 @@ def check_stocks_fluctuation():
     response = requests.get(stock_api_endpoint, params=params)
     response.raise_for_status()
     daily_stocks_data = response.json()['Time Series (Daily)']  # Nested dict
+    daily_stocks_data_list = [value for (key, value) in daily_stocks_data.items()]
 
     # We're slicing down the daily stocks data down to the two most recent days.
-    sliced_data = dict(itertools.islice(daily_stocks_data.items(), 2))
-
-    close_price_history = [float(sliced_data[day]['4. close']) for day in sliced_data]
-    yesterday_closing_price = close_price_history[0]
-    day_before_yesterday_closing_price = close_price_history[1]
+    sliced_data = daily_stocks_data_list[:2]
+    yesterday_closing_price = float(sliced_data[0]['4. close'])
+    day_before_yesterday_closing_price = float(sliced_data[1]['4. close'])
 
     close_price_difference = yesterday_closing_price - day_before_yesterday_closing_price
     fluctuation = round(close_price_difference * 100 / yesterday_closing_price, 2)

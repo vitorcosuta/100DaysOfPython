@@ -154,3 +154,4 @@ cython_debug/
 # Ignore PDF files
 *.pdf
 Days-41-to-50/Day_46/musical-time-machine/token.txt
+Days-41-to-50/Day_47/amazon-price-tracker/.idea/runConfigurations/amazon_price_tracker.xml
